@@ -1,0 +1,27 @@
+{
+  "name": "laiz/func-filter",
+  "description": "Functional Validator Utility",
+  "keywords": ["functional", "validator"],
+  "homepage": "https://github.com/nishimura/laiz-func-filter",
+  "license": "MIT",
+  "authors": [{
+    "name": "Satoshi Nishimura",
+    "email": "nishim314@gmail.com"
+  }],
+
+  "autoload": {
+      "psr-4": { "Laiz\\Filter\\": "src/" },
+      "files": [ "src/functions.php" ]
+  },
+  "autoload-dev": {
+    "psr-4": { "Laiz\\Test\\Filter\\": "test/src/" }
+  },
+  "require": {
+      "php": ">=7.1",
+      "laiz/laiz-monad": "0.3.2"
+  },
+  "require-dev": {
+      "phpunit/phpunit": "6.0",
+      "codeclimate/php-test-reporter": "dev-master"
+  }
+}
