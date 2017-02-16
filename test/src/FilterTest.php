@@ -32,4 +32,14 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(97, $ret->result()); // ord('a') => 97
         $this->assertEquals(1, $ret->state());
     }
+
+    public function testBind()
+    {
+        $m = filterPure('a');
+        $f = function($a){ return filterPure($a . 'b'); };
+
+        $ret = validate($m->bind($f), 1);
+        $this->assertEquals('ab', $ret->result());
+        $this->assertEquals(1, $ret->state());
+    }
 }

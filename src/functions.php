@@ -30,7 +30,7 @@ function filterBind(...$args)
             $f2 = $m->unFilter();
             $result = $f2($si);
             if ($result instanceof Result\Ok){
-                return ($f($result->result())->unFilter())($result->state(), $input);
+                return ($f($result->result())->unFilter())([$result->state(), $input]);
             }elseif ($result instanceof Result\EmptyOk){
                 return new Result\EmptyOk();
             }elseif ($result instanceof Result\EmptyError){
