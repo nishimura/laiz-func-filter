@@ -64,7 +64,7 @@ class FilterTest extends \PHPUnit\Framework\TestCase
     public function testToIntException(){
         $m = toInt();
         $ret = runFilter($m, 3);
-        $this->assertFail('3 is not int');
+        $this->assertFail('3 is not string');
     }
 
     public function testMin()
@@ -120,6 +120,6 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $validator = max(255);
         $m = combine($converter, $validator);
         $ret = runFilter($m, 3);
-        $this->assertFail('3 is not int');
+        $this->assertFail('3 is not string');
     }
 }
