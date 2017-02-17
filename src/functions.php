@@ -68,6 +68,28 @@ function filterMap(...$args)
     }, ...$args);
 }
 
+function filterZero()
+{
+    return new Filter(function(array $si) {
+        return new Result\EmptyError();
+    });
+}
+
+function filterPlus(...$args)
+{
+    return f(function($m1, $m2){
+        return new Filter(function(array $si) use ($m1, $m2) {
+            list($state, $input) = $si;
+            $f1 = $m1->unFilter();
+            $result = $f1($si);
+            if ($result instanceof Result\Ok)
+                return $result;
+
+            return ($m2->unFilter())($si);
+        });
+    }, ...$args);
+}
+
 /*
  * Filter s in1 out1 -> Filter s out1 out2 -> Filter s in1 out2
  */

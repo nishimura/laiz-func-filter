@@ -4,10 +4,11 @@ namespace Laiz\Test\Filter;
 
 use Laiz\Func\Loader;
 use function Laiz\Func\Functor\fmap;
+use function Laiz\Func\Alternative\aor;
 use function Laiz\Filter\runFilter;
 use function Laiz\Filter\filterPure;
 use function Laiz\Filter\combine;
-use function Laiz\Filter\{toInt, toId, min, max, option, optional};
+use function Laiz\Filter\{toInt, toId, min, max, option, optional, filterZero};
 use Laiz\Filter;
 
 class FilterTest extends \PHPUnit\Framework\TestCase
@@ -146,4 +147,26 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Filter\Result\EmptyOk::class, $ret);
     }
 
+    public function testEmpty()
+    {
+        $m = filterZero();
+        $ret = runFilter($m, 'a');
+        $this->assertInstanceOf(Filter\Result\EmptyError::class, $ret);
+    }
+
+    public function testOr()
+    {
+        $min = min(20);
+        $max = max(10);
+        $m = aor($min, $max);
+
+        $ret = runFilter($m, 25);
+        $this->assertInstanceOf(Filter\Result\Ok::class, $ret);
+
+        $ret = runFilter($m, 5);
+        $this->assertInstanceOf(Filter\Result\Ok::class, $ret);
+
+        $ret = runFilter($m, 15);
+        $this->assertInstanceOf(Filter\Result\Error::class, $ret);
+    }
 }
