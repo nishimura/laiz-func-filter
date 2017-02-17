@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Laiz\Filter;
 
 use function Laiz\Func\f;
+use Laiz\Func\Either;
 
-function validate(...$args)
+function runFilter(...$args)
 {
     return f(function($m, $a) : Result{
         return ($m->unFilter())([$a, $a]);
@@ -64,4 +66,108 @@ function filterMap(...$args)
             }
         });
     }, ...$args);
+}
+
+/*
+ * Filter s in1 out1 -> Filter s out1 out2 -> Filter s in1 out2
+ */
+function combine(...$args)
+{
+    return f(function($m1, $m2){
+        return new Filter(function(array $si) use ($m1, $m2){
+            list($state, $input) = $si;
+            $f1 = $m1->unFilter();
+            $result = $f1($si);
+            if ($result instanceof Result\Ok){
+                $f2 = $m2->unFilter();
+                return new Result\Ok($result->state(), $f2($result->result()));
+            }elseif ($result instanceof Result\EmptyOk){
+                return new Result\EmptyOk();
+            }elseif ($result instanceof Result\EmptyError){
+                return new Result\EmptyError();
+            }elseif ($result instanceof Result\Error){
+                return new Result\Error($result->state(), $result->message());
+            }else{
+                throw new Exception('Type Error');
+            }
+        });
+    }, ...$args);
+}
+
+
+/*
+ * (String -> Either String a) -> Bool -> (s, String) -> Result s a
+ */
+function mkFilter(...$args)
+{
+    return f(function(callable $f, bool $required, array $si): Result {
+        list($state, $input) = $si;
+
+        if ($input === ''){
+            if ($required)
+                return new Result\EmptyError();
+            else
+                return new Result\EmptyOk();
+        }
+
+        // type check
+        $wrap = function(string $input) use ($f): Either {
+            return $f($input);
+        };
+        return $wrap($input)->either(function($left) use ($state) {
+            return new Result\Error($state, $left);
+        }, function($right) use ($state) {
+            return new Result\Ok($state, $right);
+        });;
+    }, ...$args);
+}
+
+/*
+ * Utility Functions
+ */
+
+// Filter s String Int
+function toInt() : Filter
+{
+    return new Filter(mkFilter(function(string $input){
+        if (preg_match('/^-?[0-9]+$/', $input))
+            return new Either\Right(+($input));
+        else
+            return new Either\Left("Error toInt: [$input] is not int");
+    }, true));
+}
+
+// for primary key (1...n)
+function toId()
+{
+    return new Filter(mkFilter(function(string $input){
+        if (preg_match('/^[1-9][0-9]*$/', $input))
+            return new Either\Right(+($input));
+        else
+            return new Either\Left("Error toInt: [$input] is not Id");
+    }, true));
+}
+
+function min($n)
+{
+    return new Filter(function(array $si) use ($n) {
+        list($state, $input) = $si;
+
+        if ($input >= $n)
+            return new Result\Ok($state, $input);
+        else
+            return new Result\Error($state, "Error min: Input [$input] is under than [$n]");
+    });
+}
+
+function max($n)
+{
+    return new Filter(function(array $si) use ($n) {
+        list($state, $input) = $si;
+
+        if ($input <= $n)
+            return new Result\Ok($state, $input);
+        else
+            return new Result\Error($state, "Error max: Input [$input] is over than [$n]");
+    });
 }
