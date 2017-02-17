@@ -1,7 +1,7 @@
 {
   "name": "laiz/func-filter",
-  "description": "Functional Validator Utility",
-  "keywords": ["functional", "validator"],
+  "description": "Functional Filter Utility",
+  "keywords": ["functional", "filter", "validator"],
   "homepage": "https://github.com/nishimura/laiz-func-filter",
   "license": "MIT",
   "authors": [{
