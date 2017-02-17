@@ -92,4 +92,34 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(15, $ret->result());
         $this->assertSame('15', $ret->state());
     }
+
+    public function testCombineError()
+    {
+        $converter = toInt();
+        $validator = max(255);
+        $m = combine($converter, $validator);
+
+        $ret = runFilter($m, '');
+        $this->assertInstanceOf(Filter\Result\EmptyError::class, $ret);
+
+        $ret = runFilter($m, '255');
+        $this->assertInstanceOf(Filter\Result\Ok::class, $ret);
+
+        $ret = runFilter($m, '256');
+        $this->assertInstanceOf(Filter\Result\Error::class, $ret);
+        $this->assertContains('Error max', $ret->message());
+        $this->assertSame('256', $ret->state());
+    }
+
+    /**
+     * @expectedException TypeError
+     */
+    public function testCombineTypeError()
+    {
+        $converter = toInt();
+        $validator = max(255);
+        $m = combine($converter, $validator);
+        $ret = runFilter($m, 3);
+        $this->assertFail('3 is not int');
+    }
 }
