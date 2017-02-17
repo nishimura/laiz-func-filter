@@ -6,8 +6,7 @@ Laiz Filter
 [![Code Climate](https://codeclimate.com/github/nishimura/laiz-func-filter/badges/gpa.svg)](https://codeclimate.com/github/nishimura/laiz-func-filter)
 
 
-[![Latest Stable Version](https://poser.pugx.org/laiz/laiz-func-filter/v/stable)](https://packagist.org/packages/laiz/laiz-func-filter)
-[![License](https://poser.pugx.org/laiz/laiz-func-filter/license)](LICENSE)
+[![Latest Stable Version](https://poser.pugx.org/laiz/func-filter/v/stable)](https://packagist.org/packages/laiz/func-filter](https://poser.pugx.org/laiz/laiz-func-filter/license)](LICENSE)
 
 
 TODO
