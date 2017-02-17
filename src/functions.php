@@ -80,7 +80,7 @@ function combine(...$args)
             $result = $f1($si);
             if ($result instanceof Result\Ok){
                 $f2 = $m2->unFilter();
-                return new Result\Ok($result->state(), $f2($result->result()));
+                return $f2([$result->state(), $result->result()]);
             }elseif ($result instanceof Result\EmptyOk){
                 return new Result\EmptyOk();
             }elseif ($result instanceof Result\EmptyError){

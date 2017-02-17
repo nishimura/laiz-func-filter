@@ -80,4 +80,16 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('Error min', $ret->message());
         $this->assertSame(2, $ret->state());
     }
+
+    public function testCombine()
+    {
+        $converter = toInt();
+        $validator = max(255);
+        $m = combine($converter, $validator);
+
+        $ret = runFilter($m, '15');
+        $this->assertInstanceOf(Filter\Result\Ok::class, $ret);
+        $this->assertSame(15, $ret->result());
+        $this->assertSame('15', $ret->state());
+    }
 }
