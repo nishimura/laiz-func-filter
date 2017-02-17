@@ -7,7 +7,7 @@ use function Laiz\Func\Functor\fmap;
 use function Laiz\Filter\runFilter;
 use function Laiz\Filter\filterPure;
 use function Laiz\Filter\combine;
-use function Laiz\Filter\{toInt, toId, min, max};
+use function Laiz\Filter\{toInt, toId, min, max, option, optional};
 use Laiz\Filter;
 
 class FilterTest extends \PHPUnit\Framework\TestCase
@@ -64,7 +64,7 @@ class FilterTest extends \PHPUnit\Framework\TestCase
     public function testToIntException(){
         $m = toInt();
         $ret = runFilter($m, 3);
-        $this->assertFail('3 is not string');
+        $this->fail('3 is not string');
     }
 
     public function testMin()
@@ -120,6 +120,30 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $validator = max(255);
         $m = combine($converter, $validator);
         $ret = runFilter($m, 3);
-        $this->assertFail('3 is not string');
+        $this->fail('3 is not string');
     }
+
+    public function testOption()
+    {
+        $m = option('999', toInt());
+        $ret = runFilter($m, '5');
+        $this->assertSame(5, $ret->result());
+        $this->assertSame('5', $ret->state());
+
+        $ret = runFilter($m, '');
+        $this->assertSame(999, $ret->result());
+        $this->assertSame('', $ret->state());
+    }
+
+    public function testOptional()
+    {
+        $m = optional(toInt());
+        $ret = runFilter($m, '5');
+        $this->assertSame(5, $ret->result());
+        $this->assertSame('5', $ret->state());
+
+        $ret = runFilter($m, '');
+        $this->assertInstanceOf(Filter\Result\EmptyOk::class, $ret);
+    }
+
 }

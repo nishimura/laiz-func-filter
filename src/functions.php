@@ -171,3 +171,31 @@ function max($n)
             return new Result\Error($state, "Error max: Input [$input] is over than [$n]");
     });
 }
+
+// String -> Filter s String o -> Filter s String o
+function option(...$args)
+{
+    return f(function(string $default, Filter $m): Filter {
+        return new Filter(function(array $si) use ($default, $m){
+            list($state, $input) = $si;
+            if ($input === '')
+                return ($m->unFilter())([$state, $default]);
+            else
+                return ($m->unFilter())($si);
+        });
+    }, ...$args);
+}
+
+// Filter s String o -> Filter s String o
+function optional(...$args)
+{
+    return f(function(Filter $m): Filter{
+        return new Filter(function(array $si) use ($m){
+            list($state, $input) = $si;
+            if ($input === '')
+                return new Result\EmptyOk();
+            else
+                return ($m->unFilter())($si);
+        });
+    }, ...$args);
+}
