@@ -7,7 +7,7 @@ Laiz Filter
 
 
 [![Latest Stable Version](https://poser.pugx.org/laiz/func-filter/v/stable)](https://packagist.org/packages/laiz/func-filter)
-[![License](https://poser.pugx.org/laiz/laiz-func-filter/license)](LICENSE)
+[![License](https://poser.pugx.org/laiz/func-filter/license)](LICENSE)
 
 
 TODO
